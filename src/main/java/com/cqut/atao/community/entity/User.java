@@ -45,6 +45,9 @@ public class User {
      */
     private int status;
 
+    /**
+     * 激活码
+     */
     private String activationCode;
 
     /**
