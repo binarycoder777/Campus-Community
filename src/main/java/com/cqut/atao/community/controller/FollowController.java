@@ -1,8 +1,10 @@
 package com.cqut.atao.community.controller;
 
 
+import com.cqut.atao.community.entity.Event;
 import com.cqut.atao.community.entity.Page;
 import com.cqut.atao.community.entity.User;
+import com.cqut.atao.community.event.EventProducer;
 import com.cqut.atao.community.service.FollowService;
 import com.cqut.atao.community.service.UserService;
 import com.cqut.atao.community.util.CommunityConstant;
@@ -31,12 +33,24 @@ public class FollowController implements CommunityConstant {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/follow", method = RequestMethod.POST)
     @ResponseBody
     public String follow(int entityType, int entityId) {
         User user = hostHolder.getUser();
 
         followService.follow(user.getId(), entityType, entityId);
+
+        // 触发关注事件
+        Event event = new Event()
+                .setTopic(TOPIC_FOLLOW)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
 
         return CommunityUtil.getJSONString(0, "已关注!");
     }
