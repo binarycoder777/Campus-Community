@@ -1,5 +1,10 @@
 package com.cqut.atao.community.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.util.Date;
 
 
@@ -8,51 +13,35 @@ import java.util.Date;
  * @data 2022-2-16
  *  帖子实体类
  */
+@Document(indexName = "discusspost", type = "_doc", shards = 6, replicas = 3)
 public class DiscussPost {
 
-    /**
-     * 唯一id
-     */
+    @Id
     private int id;
 
-    /**
-     * 所属用户id
-     */
+    @Field(type = FieldType.Integer)
     private int userId;
 
-    /**
-     * 标题
-     */
+    // 互联网校招
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart")
     private String title;
 
-    /**
-     * 内容
-     */
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart")
     private String content;
 
-    /**
-     * 类型
-     */
+    @Field(type = FieldType.Integer)
     private int type;
 
-    /**
-     * 状态
-     */
+    @Field(type = FieldType.Integer)
     private int status;
 
-    /**
-     * 创建日期
-     */
+    @Field(type = FieldType.Date)
     private Date createTime;
 
-    /**
-     * 评论数
-     */
+    @Field(type = FieldType.Integer)
     private int commentCount;
 
-    /**
-     * 分数
-     */
+    @Field(type = FieldType.Double)
     private double score;
 
     public int getId() {
