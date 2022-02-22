@@ -9,6 +9,8 @@ import com.cqut.atao.community.service.UserService;
 import com.cqut.atao.community.util.CommunityConstant;
 import com.cqut.atao.community.util.CommunityUtil;
 import com.cqut.atao.community.util.HostHolder;
+import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -54,12 +57,51 @@ public class UserController implements CommunityConstant {
     @Autowired
     private FollowService followService;
 
+    @Value("${qiniu.key.access}")
+    private String accessKey;
+
+    @Value("${qiniu.key.secret}")
+    private String secretKey;
+
+    @Value("${qiniu.bucket.header.name}")
+    private String headerBucketName;
+
+    @Value("${quniu.bucket.header.url}")
+    private String headerBucketUrl;
+
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
-    public String getSettingPage() {
+    public String getSettingPage(Model model) {
+        // 上传文件名称
+        String fileName = CommunityUtil.generateUUID();
+        // 设置响应信息
+        StringMap policy = new StringMap();
+        policy.put("returnBody", CommunityUtil.getJSONString(0));
+        // 生成上传凭证
+        Auth auth = Auth.create(accessKey, secretKey);
+        String uploadToken = auth.uploadToken(headerBucketName, fileName, 3600, policy);
+
+        model.addAttribute("uploadToken", uploadToken);
+        model.addAttribute("fileName", fileName);
+
         return "/site/setting";
     }
 
+    // 更新头像路径
+    @RequestMapping(path = "/header/url", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateHeaderUrl(String fileName) {
+        if (StringUtils.isBlank(fileName)) {
+            return CommunityUtil.getJSONString(1, "文件名不能为空!");
+        }
+
+        String url = headerBucketUrl + "/" + fileName;
+        userService.updateHeader(hostHolder.getUser().getId(), url);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    // 废弃
     @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
@@ -96,6 +138,7 @@ public class UserController implements CommunityConstant {
         return "redirect:/index";
     }
 
+    // 废弃
     @RequestMapping(path = "/header/{fileName}", method = RequestMethod.GET)
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) {
         // 服务器存放路径

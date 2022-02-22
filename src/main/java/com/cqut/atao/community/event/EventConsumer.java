@@ -40,23 +40,23 @@ public class EventConsumer implements CommunityConstant {
     @Autowired
     private ElasticsearchService elasticsearchService;
 
-    @Value("${wk.image.command}")
-    private String wkImageCommand;
+//    @Value("${wk.image.command}")
+//    private String wkImageCommand;
+//
+//    @Value("${wk.image.storage}")
+//    private String wkImageStorage;
+//
+//    @Value("${qiniu.key.access}")
+//    private String accessKey;
+//
+//    @Value("${qiniu.key.secret}")
+//    private String secretKey;
+//
+//    @Value("${qiniu.bucket.share.name}")
+//    private String shareBucketName;
 
-    @Value("${wk.image.storage}")
-    private String wkImageStorage;
-
-    @Value("${qiniu.key.access}")
-    private String accessKey;
-
-    @Value("${qiniu.key.secret}")
-    private String secretKey;
-
-    @Value("${qiniu.bucket.share.name}")
-    private String shareBucketName;
-
-    @Autowired
-    private ThreadPoolTaskScheduler taskScheduler;
+//    @Autowired
+//    private ThreadPoolTaskScheduler taskScheduler;
 
     @KafkaListener(topics = {TOPIC_COMMENT, TOPIC_LIKE, TOPIC_FOLLOW})
     public void handleCommentMessage(ConsumerRecord record) {
