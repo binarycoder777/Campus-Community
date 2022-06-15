@@ -1,4 +1,4 @@
-# community
+# 校园E社区
 描述：亦在为在校大学生提供分享、交流校园趣事而搭建的校园交流平台，实现了发帖、评论、私信、通知、 搜索、权限、统计等功能。
 技术栈:SpringBoot/Kafka/Redis/Elasticsearch/Quartz/Caffine
 技术方案:
