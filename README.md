@@ -1,6 +1,6 @@
 # 校园E社区
 描述：亦在为在校大学生提供分享、交流校园趣事而搭建的校园交流平台，实现了发帖、评论、私信、通知、 搜索、权限、统计等功能。
-技术栈:SpringBoot/Kafka/Redis/Elasticsearch/Quartz/Caffine
+技术栈:SpringBoot/Kafka/Redis/Elasticsearch/Quartz/Caffine  
 技术方案:
 - 使用 SpringSecrity 进行认证授权，实现了多重角色、URL 级别的权限管理，增强系统安全性。 
 - 使用 Caffeine+Redis 实现两级缓存，对热门帖子进行优化，提升查询效率，减轻数据库压力。 
